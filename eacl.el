@@ -151,8 +151,8 @@
   (let* ((default-directory (or (eacl-get-project-root) default-directory))
          (cur-line (buffer-substring-no-properties (line-beginning-position) (point)))
          (keyword (eacl-get-keyword cur-line))
-         (cmd-format-opts (if complete-line "%s -rsh %s \"%s\" *"
-                            "%s -rsnhPzo %s \"%s\" *"))
+         (cmd-format-opts (if complete-line "%s -rshI %s \"%s\" *"
+                            "%s -rsnhPzoI %s \"%s\" *"))
          (cmd (format cmd-format-opts
                       eacl-grep-program
                       (eacl-grep-exclude-opts)
