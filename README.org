@@ -1,4 +1,4 @@
-* eacl - Emacs auto complete line(s) v0.0.1
+* eacl - Emacs auto complete line(s) v0.0.2
 Auto complete line(s) by grepping the project.
 
 *Screenshot:*
@@ -10,17 +10,27 @@ Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path
 
 [[https://www.gnu.org/software/grep/][Gnu Grep]], Emacs 24.3 and [[https://github.com/abo-abo/swiper][counsel]] are required.
 * Usage
-Project root is *automatically* detected if Git/Mercurial/Subversion is used.
+Multiple commands are provided to grep files in the project to get auto complete candidates.
+
+The keyword to grep is the text from line beginning to current cursor.
+
+Project is *automatically* detected if Git/Mercurial/Subversion is used.
 
 You can override the default root directory by setting =eacl-project-root=,
 #+begin_src elisp
 (setq eacl-project-root "~/projs/PROJECT_DIR")
 #+end_src
 
+Here are the commands you can use.
 ** =M-x eacl-complete-line=
-Complete line. You could assign key binding =C-x C-l= to it.
+It completes line. You could assign key binding =C-x C-l= to it.
 ** =M-x eacl-complete-statement=
-Complete statement. Statement could be multiple lines and is matched by pattern =eacl-statement-regex=.
+It completes statement. Statement could be multiple lines and is matched by pattern =eacl-statement-regex=.
 
+By default =statement= ending with ";"
+** =M-x eacl-complete-snippet=
+It completes snippets ending with "}".
+** =M-x eacl-complete-tag=
+It completes HTML tag ending with ">".
 * Bug Report
 Check [[https://github.com/redguardtoo/eacl]].
