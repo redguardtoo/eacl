@@ -1,18 +1,42 @@
-* eacl - Emacs auto complete line(s) v0.0.3
+* eacl - Emacs auto complete line(s) v1.0.0
 Auto complete line(s) by grepping the project.
 
 *Screenshot:*
 
 [[https://raw.githubusercontent.com/redguardtoo/eacl/master/eacl-screenshot-nq8.png]]
 
+For example, a web developer need create a new component instanc.
+
+Suppose the component has been used in current project before:
+#+begin_src html
+<MyComponent
+  attr1="v1"
+  attr2="v2"
+  attr3="v3"
+  attr4="v4"
+/>
+  <Toolbar>
+    <Button onClick={ e => console.log(e) }>
+      <i className="fa fa-circle" />
+    </Button>
+  </Toolbar>
+</MyComponent>
+#+end_src
+
+That developer only need input =<MyComponent= and run =M-x eacl-complete-tag=. Magic happens!*
 * Install
 Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path]]. Then add =(require 'eacl)= to your configuration.
 
 [[https://www.gnu.org/software/grep/][Gnu Grep]], Emacs 24.3 and [[https://github.com/abo-abo/swiper][ivy]] are required.
 
+** Linux
+GNU Grep should be pre-installed.
+** macOS
 Please use [[https://brew.sh/][HomeBrew]] to install =GNU Grep= on macOS.
 
 Then insert =(setq eacl-grep-program "ggrep")= into =~/.emacs=. The bundled =BSD Grep= on macOS is too outdated to use.
+** Windows
+You can use Cygwin/MSYS2 to install =grep= program. Don't forget to add the location of =grep= into environment variable =PATH=.
 * Usage
 Multiple commands are provided to grep files in the project to get auto complete candidates.
 
@@ -27,14 +51,19 @@ You can override the default root directory by setting =eacl-project-root=,
 
 Here are the commands you can use.
 ** =M-x eacl-complete-line=
-It completes line. You could assign key binding =C-x C-l= to it.
-** =M-x eacl-complete-statement=
-It completes statement. Statement could be multiple lines and is matched by pattern =eacl-statement-regex=.
+Complete the line. You could assign key binding =C-x C-l= to it.
 
-By default =statement= ending with ";"
+** =M-x eacl-complete-statement=
+Complete the statement which ends with ";".
+
+For example, input text =import= and run this command.
 ** =M-x eacl-complete-snippet=
-It completes snippets ending with "}".
+Complete the snippet which ends with "}".
+
+For example, input text =if= and run this command.
 ** =M-x eacl-complete-tag=
-It completes HTML tag ending with ">".
+Complete the HTML tag which ends with ">".
+
+For example, input text =<div= and run this command.
 * Bug Report
 Check [[https://github.com/redguardtoo/eacl]].
