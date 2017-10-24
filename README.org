@@ -8,7 +8,11 @@ Auto complete line(s) by grepping the project.
 * Install
 Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path]]. Then add =(require 'eacl)= to your configuration.
 
-[[https://www.gnu.org/software/grep/][Gnu Grep]], Emacs 24.3 and [[https://github.com/abo-abo/swiper][counsel]] are required.
+[[https://www.gnu.org/software/grep/][Gnu Grep]], Emacs 24.3 and [[https://github.com/abo-abo/swiper][ivy]] are required.
+
+Please use [[https://brew.sh/][HomeBrew]] to install =GNU Grep= on macOS.
+
+Then insert =(setq eacl-grep-program "ggrep")= into =~/.emacs=. The bundled =BSD Grep= on macOS is too outdated to use.
 * Usage
 Multiple commands are provided to grep files in the project to get auto complete candidates.
 
