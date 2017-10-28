@@ -1,4 +1,4 @@
-* eacl - Emacs auto complete line(s) v1.0.0
+* eacl - Emacs auto complete line(s) v1.0.1
 Auto complete line(s) by grepping the project.
 
 *Screenshot:*

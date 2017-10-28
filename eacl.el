@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2017 Chen Bin
 ;;
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Author: Chen Bin <chenbin DOT sh AT gmail DOT com>
 ;; URL: http://github.com/redguardtoo/eacl
 ;; Package-Requires: ((emacs "24.3") (ivy "0.9.1"))
@@ -139,25 +139,21 @@
 
 (defun eacl-trim-left (s)
   "Remove whitespace at the beginning of S."
-  (if (string-match "\\`[ \t\n\r]+" s)
-      (replace-match "" t t s)
-    s))
+  (if (string-match "\\`[ \t\n\r]+" s) (replace-match "" t t s) s))
 
 (defun eacl-encode(s)
   "Encode S."
-  ;; encode "{}[]"
-  (setq s (replace-regexp-in-string "\"" "\\\\\"" s))
-  (setq s (replace-regexp-in-string "\\?" "\\\\\?" s))
-  (setq s (replace-regexp-in-string "\\$" "\\\\x24" s))
-  (setq s (replace-regexp-in-string "\\*" "\\\\\*" s))
-  (setq s (replace-regexp-in-string "\\." "\\\\\." s))
-  (setq s (replace-regexp-in-string "\\[" "\\\\\[" s))
-  (setq s (replace-regexp-in-string "\\]" "\\\\\]" s))
+  (setq s (regexp-quote s))
+  ;; Be generic about quotes. Most scrip languages could use either double quotes
+  ;; or single quote to wrap string.
+  ;; In this case, we don't care, we just want to get mores candidates for
+  ;; code completion
+  ;; For example, in javascript, `import { Button } from "react-bootstrap` and
+  ;; `import { Button } from 'react-bootstrap';` are same.
+  (setq s (replace-regexp-in-string "'" "." s))
+  (setq s (replace-regexp-in-string "\"" "." s))
   (setq s (replace-regexp-in-string "\n" "[[:space:]]" s))
   (setq s (replace-regexp-in-string "\r" "[[:space:]]" s))
-  ;; don't know how to pass "(" to shell, so make a little noise here
-  (setq s (replace-regexp-in-string "\(" "." s))
-  (setq s (replace-regexp-in-string "\)" "." s))
   s)
 
 (defun eacl-grep-exclude-opts ()
@@ -203,13 +199,10 @@ CUR-LINE and KEYWORD are also required.  START is position we insert
 next text.
 If REGEX is not nil, complete statement."
   (let* ((default-directory (or (eacl-get-project-root) default-directory))
-         (cmd-format-opts (if regex "%s -rshPzoI %s \"%s\" *"
-                            "%s -rshEI %s \"%s\" *"))
-         (cmd (format cmd-format-opts
+         (cmd (format (if regex "%s -rshzoI %s \"%s\" *" "%s -rshI %s \"%s\" *")
                       eacl-grep-program
                       (eacl-grep-exclude-opts)
-                      (if regex (concat keyword regex)
-                        keyword)))
+                      (if regex (concat keyword regex) keyword)))
          ;; Please note grep's "-z" will output null character at the end of each candidate
          (sep (if regex "\x0" "[\r\n]+"))
          (collection (split-string (shell-command-to-string cmd) sep t "[ \t\r\n]+"))
@@ -227,7 +220,7 @@ If REGEX is not nil, complete statement."
           (eacl-replace-text (car collection) start regex))))
        ((> (length collection) 1)
         ;; uniq
-        (if regex
+        (when regex
           (setq collection (mapcar 'eacl-create-candidate-summary collection)))
         (ivy-read "candidates:"
                   collection
