@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2017 Chen Bin
 ;;
-;; Version: 1.0.1
+;; Version: 1.0.2
 ;; Author: Chen Bin <chenbin DOT sh AT gmail DOT com>
 ;; URL: http://github.com/redguardtoo/eacl
 ;; Package-Requires: ((emacs "24.3") (ivy "0.9.1"))
@@ -56,6 +56,7 @@
 
 ;;; Code:
 (require 'ivy)
+(require 'grep)
 (require 'cl-lib)
 
 (defgroup eacl nil
@@ -77,51 +78,14 @@
   :type '(repeat sexp)
   :group 'eacl)
 
+(defcustom eacl-project-root-callback 'eacl-get-project-root
+  "The callback to get project root directory.
+The callback is expected to return the path of project root."
+  :type 'function
+  :group 'eacl)
+
 (defvar eacl-keyword-start nil
   "The start position of multi-line keyword.  Internal variable.")
-
-(defcustom eacl-grep-ignore-dirs
-  '(".git"
-    ".bzr"
-    ".svn"
-    "bower_components"
-    "node_modules"
-    ".sass-cache"
-    ".cache"
-    "test"
-    "tests"
-    ".metadata"
-    "logs")
-  "Directories to ignore when grepping."
-  :type '(repeat sexp)
-  :group 'eacl)
-
-(defcustom eacl-grep-ignore-file-exts
-  '("log"
-    "properties"
-    "session"
-    "swp")
-  "File extensions to ignore when grepping."
-  :type '(repeat sexp)
-  :group 'eacl)
-
-(defcustom eacl-grep-ignore-file-names
-  '("TAGS"
-    "tags"
-    "GTAGS"
-    "GPATH"
-    ".bookmarks.el"
-    "*.svg"
-    "history"
-    "#*#"
-    "*.min.js"
-    "*bundle*.js"
-    "*vendor*.js"
-    "*.min.css"
-    "*~")
-  "File names to ignore when grepping."
-  :type '(repeat sexp)
-  :group 'eacl)
 
 ;;;###autoload
 (defun eacl-get-project-root ()
@@ -152,20 +116,31 @@
   ;; `import { Button } from 'react-bootstrap';` are same.
   (setq s (replace-regexp-in-string "'" "." s))
   (setq s (replace-regexp-in-string "\"" "." s))
-  (setq s (replace-regexp-in-string "\n" "[[:space:]]" s))
-  (setq s (replace-regexp-in-string "\r" "[[:space:]]" s))
   s)
+
+(defun eacl-shell-quote-argument (argument)
+  "Try `shell-quote-argument' ARGUMENT and process special characters."
+  (cond
+   ((eq system-type 'ms-dos)
+    (shell-quote-argument argument))
+   (t
+    ;; We only use GNU Grep from Cygwin/MSYS2 even on Windows.
+    ;; So we can safely assume the Linux Shell is available.
+    ;; Below code is copied from `shell-quote-argument'.
+    (if (equal argument "")
+        "''"
+      (replace-regexp-in-string "[^-0-9a-zA-Z<>{}[]:_./\n]" "\\\\\\&"
+                                (replace-regexp-in-string
+                                 "[\n\r\t ]" "[[:space:]]"
+                                 argument))))))
 
 (defun eacl-grep-exclude-opts ()
   "Create grep exclude options."
   (concat (mapconcat (lambda (e) (format "--exclude-dir='%s'" e))
-                     eacl-grep-ignore-dirs " ")
-          " "
-          (mapconcat (lambda (e) (format "--exclude='*.%s'" e))
-                     eacl-grep-ignore-file-exts " ")
+                     grep-find-ignored-directories " ")
           " "
           (mapconcat (lambda (e) (format "--exclude='%s'" e))
-                     eacl-grep-ignore-file-names " ")))
+                     grep-find-ignored-files " ")))
 
 ;;;###autoload
 (defun eacl-get-keyword (cur-line)
@@ -198,15 +173,18 @@ If REGEX is nil, we only complete current line.
 CUR-LINE and KEYWORD are also required.  START is position we insert
 next text.
 If REGEX is not nil, complete statement."
-  (let* ((default-directory (or (eacl-get-project-root) default-directory))
+  (let* ((default-directory (or (funcall eacl-project-root-callback) default-directory))
+         (quoted-keyword (eacl-shell-quote-argument keyword))
          (cmd (format (if regex "%s -rshzoI %s \"%s\" *" "%s -rshI %s \"%s\" *")
                       eacl-grep-program
                       (eacl-grep-exclude-opts)
-                      (if regex (concat keyword regex) keyword)))
+                      (if regex (concat quoted-keyword regex) quoted-keyword)))
          ;; Please note grep's "-z" will output null character at the end of each candidate
          (sep (if regex "\x0" "[\r\n]+"))
          (collection (split-string (shell-command-to-string cmd) sep t "[ \t\r\n]+"))
          (rlt t))
+    ;; (message "keyword=%s" keyword)
+    ;; (message "quoted keyword=%s" quoted-keyword)
     ;; (message "cmd=%s collection length=%s sep=%s" cmd (length collection) sep)
     (when collection
       (setq collection (delq nil (delete-dups collection)))
