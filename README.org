@@ -3,7 +3,7 @@ Auto complete line(s) by grepping the project.
 
 *Screenshot:*
 
-[[https://raw.githubusercontent.com/redguardtoo/eacl/master/eacl-screenshot-nq8.png]]
+[[https://raw.githubusercontent.com/redguardtoo/eacl/master/eacl-demo.gif]]
 
 For example, a web developer need create a new component instanc.
 
