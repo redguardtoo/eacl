@@ -5,7 +5,7 @@ Auto complete line(s) by grepping the project.
 
 [[https://raw.githubusercontent.com/redguardtoo/eacl/master/eacl-demo.gif]]
 
-For example, a web developer need create a new component instanc.
+For example, a web developer need create a new component instance.
 
 Suppose the component has been used in current project before:
 #+begin_src html
@@ -23,11 +23,11 @@ Suppose the component has been used in current project before:
 </MyComponent>
 #+end_src
 
-That developer only need input =<MyComponent= and run =M-x eacl-complete-tag=. Magic happens!*
+The developer only need input =<MyComponent= and run =M-x eacl-complete-tag=. Then Magic happens!*
 * Install
 Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path]]. Then add =(require 'eacl)= to your configuration.
 
-[[https://www.gnu.org/software/grep/][Gnu Grep]], Emacs 24.3 and [[https://github.com/abo-abo/swiper][ivy]] are required.
+[[https://www.gnu.org/software/grep/][GNU Grep]], Emacs v24.3, and [[https://github.com/abo-abo/swiper][Ivy]] are required.
 
 ** Linux
 GNU Grep should be pre-installed.
