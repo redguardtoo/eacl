@@ -175,7 +175,7 @@ next text.
 If REGEX is not nil, complete statement."
   (let* ((default-directory (or (funcall eacl-project-root-callback) default-directory))
          (quoted-keyword (eacl-shell-quote-argument keyword))
-         (cmd (format (if regex "%s -rshzoI %s \"%s\" *" "%s -rshI %s \"%s\" *")
+         (cmd (format (if regex "%s -rshzoI %s -- \"%s\" *" "%s -rshI %s -- \"%s\" *")
                       eacl-grep-program
                       (eacl-grep-exclude-opts)
                       (if regex (concat quoted-keyword regex) quoted-keyword)))
