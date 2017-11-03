@@ -225,8 +225,11 @@ If REGEX is not nil, complete statement."
         (message "Auto-completion done!")
         (setq continue nil))
       (cond
-       ((and continue (yes-or-no-p "Continue?"))
-        (setq keyword (eacl-encode (eacl-trim-left (buffer-substring-no-properties start (point))))))
+       (continue
+        (when (fboundp 'xref-pulse-momentarily)
+          (xref-pulse-momentarily))
+        (when (yes-or-no-p "Continue?")
+          (setq keyword (eacl-encode (eacl-trim-left (buffer-substring-no-properties start (point)))))))
        (t
         (setq continue nil))))))
 
