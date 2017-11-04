@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2017 Chen Bin
 ;;
-;; Version: 1.0.2
+;; Version: 1.0.3
 ;; Author: Chen Bin <chenbin DOT sh AT gmail DOT com>
 ;; URL: http://github.com/redguardtoo/eacl
 ;; Package-Requires: ((emacs "24.3") (ivy "0.9.1"))
@@ -45,6 +45,39 @@
 ;;
 ;; `eacl-complete-tag' completes HTML tag which ends with ">".
 ;; For example, input "<div" and run this command.
+;;
+;; Modify `grep-find-ignored-directories' and `grep-find-ignored-files'
+;; to setup directories and files grep should ignore:
+;;   (eval-after-load 'grep
+;;     '(progn
+;;        (dolist (v '("node_modules"
+;;                     "bower_components"
+;;                     ".sass_cache"
+;;                     ".cache"
+;;                     ".npm"))
+;;          (add-to-list 'grep-find-ignored-directories v))
+;;        (dolist (v '("*.min.js"
+;;                     "*.bundle.js"
+;;                     "*.min.css"
+;;                     "*.json"
+;;                     "*.log"))
+;;          (add-to-list 'grep-find-ignored-files v))))
+;;
+;; Or you can setup above ignore options in ".dir-locals.el".
+;; The content of ".dir-locals.el":
+;;   ((nil . ((eval . (progn
+;;                      (dolist (v '("node_modules"
+;;                                   "bower_components"
+;;                                   ".sass_cache"
+;;                                   ".cache"
+;;                                   ".npm"))
+;;                        (add-to-list 'grep-find-ignored-directories v))
+;;                      (dolist (v '("*.min.js"
+;;                                   "*.bundle.js"
+;;                                   "*.min.css"
+;;                                   "*.json"
+;;                                   "*.log"))
+;;                        (add-to-list 'grep-find-ignored-files v)))))))
 ;;
 ;; GNU Grep, Emacs 24.3 and counsel (https://github.com/abo-abo/swiper)
 ;; are required.
