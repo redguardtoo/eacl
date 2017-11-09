@@ -23,16 +23,16 @@ Suppose the component has been used in current project before:
 </MyComponent>
 #+end_src
 
-The developer only need input =<MyComponent= and run =M-x eacl-complete-tag=. Then Magic happens!*
+The developer only need input =<MyComponent= and run =M-x eacl-complete-tag=. *Magic happens!*
 * Install
 Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path]]. Then add =(require 'eacl)= to your configuration.
 
-[[https://www.gnu.org/software/grep/][GNU Grep]], Emacs v24.3, and [[https://github.com/abo-abo/swiper][Ivy]] are required.
+[[https://www.gnu.org/software/grep/][GNU Grep v3.1+]], Emacs v24.3+, and [[https://github.com/abo-abo/swiper][Ivy]] are required.
 
 ** Linux
-GNU Grep should be pre-installed.
+GNU Grep v3.1+ should be installed.
 ** macOS
-Please use [[https://brew.sh/][HomeBrew]] to install =GNU Grep= on macOS.
+Please use [[https://brew.sh/][HomeBrew]] to install latest =GNU Grep= on macOS.
 
 Then insert =(setq eacl-grep-program "ggrep")= into =~/.emacs=. The bundled =BSD Grep= on macOS is too outdated to use.
 ** Windows
