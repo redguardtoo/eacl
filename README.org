@@ -1,4 +1,4 @@
-* eacl - Emacs auto complete line(s) v1.1.2
+* eacl - Emacs auto complete line(s) v1.1.3
 Auto complete line(s) by grepping the project.
 
 *Screenshot:*
@@ -27,8 +27,11 @@ The developer only need input =<MyComponent= and run =M-x eacl-complete-tag=. *M
 * Install
 Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path]]. Then add =(require 'eacl)= to your configuration.
 
-[[https://www.gnu.org/software/grep/][GNU Grep v3.1+]], Emacs v24.3+, and [[https://github.com/abo-abo/swiper][Ivy]] are required.
+Emacs v24.3+, and [[https://github.com/abo-abo/swiper][Ivy]] are required.
 
+[[https://www.gnu.org/software/grep/][GNU Grep v3.1+]] is OPTIONALLY required for multi-line completion.
+
+=git grep= will be automatically detected for single line completion.
 ** Linux
 GNU Grep v3.1+ should be installed.
 ** macOS

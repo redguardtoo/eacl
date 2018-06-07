@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2017, 2018 Chen Bin
 ;;
-;; Version: 1.1.2
+;; Version: 1.1.3
 
 ;; Author: Chen Bin <chenbin DOT sh AT gmail DOT com>
 ;; URL: http://github.com/redguardtoo/eacl
@@ -80,8 +80,9 @@
 ;;                                   "*.log"))
 ;;                        (add-to-list 'grep-find-ignored-files v)))))))
 ;;
-;; GNU Grep v3.1+, Emacs v24.3 and Ivy (https://github.com/abo-abo/swiper)
-;; are required.
+;; Emacs v24.3 and Ivy (https://github.com/abo-abo/swiper) are required.
+;; GNU Grep v3.1+ is optionally required for multi-line completion.
+;; "git grep" is automatically detected for single line completion.
 ;;
 ;; On macOS:
 ;;   - Use HomeBrew (https://brew.sh/) to install latest GNU Grep on macOS
