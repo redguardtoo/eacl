@@ -309,6 +309,7 @@ EXTRA is optional information to filter candidates."
          (sep (if regex "\x0" "[\r\n]+"))
          (orig-collection (eacl-get-candidates cmd sep keyword))
          (collection (eacl-clean-candidates orig-collection))
+         (time (current-time))
          (rlt t))
 
     (when extra
@@ -334,7 +335,8 @@ EXTRA is optional information to filter candidates."
         ;; uniq
         (when regex
           (setq collection (mapcar 'eacl-multiline-candidate-summary collection)))
-        (ivy-read "candidates:"
+        (ivy-read (format "candidates (%.01f seconds):"
+                          (float-time (time-since time)))
                   collection
                   :action (lambda (l)
                             (if (consp l) (setq l (cdr l)))
