@@ -1,4 +1,4 @@
-* eacl - Emacs auto complete line(s) v1.1.3
+* eacl - Emacs auto complete line(s) v2.0.0
 Auto complete line(s) by grepping the project.
 
 *Screenshot:*
@@ -23,27 +23,21 @@ Suppose the component has been used in current project before:
 </MyComponent>
 #+end_src
 
-The developer only need input =<MyComponent= and run =M-x eacl-complete-tag=. *Magic happens!*
+The developer only need input =<MyComponent= and run =M-x eacl-complete-multiline=.
 * Install
 Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path]]. Then add =(require 'eacl)= to your configuration.
 
-Emacs v24.3+, and [[https://github.com/abo-abo/swiper][Ivy]] are required.
+[[https://github.com/abo-abo/swiper][Ivy]] is required.
 
-[[https://www.gnu.org/software/grep/][GNU Grep v3.1+]] is OPTIONALLY required for multi-line completion.
-
-=git grep= will be automatically detected for single line completion.
-** Linux
-GNU Grep v3.1+ should be installed.
-** macOS
-Please use [[https://brew.sh/][HomeBrew]] to install latest =GNU Grep= on macOS.
-
-Then insert =(setq eacl-grep-program "ggrep")= into =~/.emacs=. The bundled =BSD Grep= on macOS is too outdated to use.
-** Windows
-You can use Cygwin/MSYS2 to install =grep= program. Don't forget to add the location of =grep= into environment variable =PATH=.
+=git grep= will be automatically detected for completion if possible. Or else default grep is used.
 * Usage
-Multiple commands are provided to grep files in the project to get auto complete candidates.
+=M-x eacl-complete-line= to complete single line in project.
+
+=M-x eacl-complete-multiline= to complete multiline code or html tag in project
 
 The keyword to grep is the text from line beginning to current cursor.
+
+Whitespace in keyword could match any characters.
 
 Project is *automatically* detected if Git/Mercurial/Subversion is used.
 
@@ -51,25 +45,8 @@ You can override the default root directory by setting =eacl-project-root=,
 #+begin_src elisp
 (setq eacl-project-root "~/projs/PROJECT_DIR")
 #+end_src
-
-Here are the commands you can use.
-** =M-x eacl-complete-line=
-Complete the line. You could assign key binding =C-x C-l= to it.
-
-** =M-x eacl-complete-statement=
-Complete the statement which ends with ";".
-
-For example, input text =import= and run this command.
-** =M-x eacl-complete-snippet=
-Complete the snippet which ends with "}".
-
-For example, input text =if= and run this command.
-** =M-x eacl-complete-tag=
-Complete the HTML tag which ends with ">".
-
-For example, input text =<div= and run this command.
 * Tips
-** Directories and files grep should ignore
+** Directories and files grep to ignore
 Modify =grep-find-ignored-directories= and =grep-find-ignored-files= to setup directories and files grep should ignore:
 #+begin_src elisp
 (eval-after-load 'grep
@@ -90,7 +67,7 @@ Modify =grep-find-ignored-directories= and =grep-find-ignored-files= to setup di
 
 Or you can setup above ignore options in [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html][.dir-locals.el]].
 
-The content of ".dir-locals.el",
+Sample of =.dir-locals.el=,
 #+begin_src elisp
 ((nil . ((eval . (progn
                    (dolist (v '("node_modules"
