@@ -1,4 +1,4 @@
-;;; eacl.el --- Auto-complete line(s) by grepping project
+;;; eacl.el --- Auto-complete lines by grepping project
 
 ;; Copyright (C) 2017, 2018 Chen Bin
 ;;
