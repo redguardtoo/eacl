@@ -123,6 +123,13 @@ The callback is expected to return the path of project root."
 (defun eacl-get-project-root ()
   "Get project root."
   (or eacl-project-root
+      ;; use projectile to find project root
+      (and (fboundp 'projectile-find-file)
+           (if (featurep 'projectile) t (require 'projectile))
+           (projectile-project-root))
+      ;; use find-file-in-project to find project root
+      (and (fboundp 'ffip-project-root) (ffip-project-root))
+      ;; find project root manually
       (cl-some (apply-partially 'locate-dominating-file
                                 default-directory)
                eacl-project-file)))
