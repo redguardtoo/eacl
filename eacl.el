@@ -75,7 +75,7 @@
 
 
 ;;; Code:
-(require 'ivy)
+(require 'ivy nil t)
 (require 'grep)
 (require 'cl-lib)
 

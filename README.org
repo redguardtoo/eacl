@@ -1,4 +1,7 @@
 * eacl - Emacs auto complete lines v2.0.1
+
+[[https://travis-ci.org/redguardtoo/eacl][https://travis-ci.org/redguardtoo/eacl.svg?branch=master]] [[http://melpa.org/#/eacl][file:http://melpa.org/packages/eacl-badge.svg]] [[http://stable.melpa.org/#/eacl][file:http://stable.melpa.org/packages/eacl-badge.svg]]
+
 Auto complete lines by grepping the project.
 
 *Screenshot:*
@@ -26,6 +29,8 @@ Suppose the component has been used in current project before:
 The developer only need input =<MyComponent= and run =M-x eacl-complete-multiline=.
 * Install
 Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path]]. Then add =(require 'eacl)= to your configuration.
+
+It's also possible to use [[http://melpa.org][melpa]].
 
 [[https://github.com/abo-abo/swiper][Ivy]] is required.
 
