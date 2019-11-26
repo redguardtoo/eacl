@@ -334,8 +334,9 @@ Whitespace in the keyword could match any characters."
      (if rlt (line-end-position))))
 
 (defun eacl-html-p ()
+  "Is html related mode."
   (or (memq major-mode '(web-mode rjsx-mode xml-mode js2-jsx-mode))
-      (derived-mode-p '(sgml-mode))))
+      (derived-mode-p 'sgml-mode)))
 
 (defmacro eacl-match-html-start-tag-p (line html-p)
   "LINE is like '>'."
