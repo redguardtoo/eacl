@@ -1,4 +1,4 @@
-* eacl - Emacs auto complete lines v2.0.1
+* eacl - Emacs auto complete lines v2.0.2
 
 [[https://travis-ci.org/redguardtoo/eacl][https://travis-ci.org/redguardtoo/eacl.svg?branch=master]] [[http://melpa.org/#/eacl][file:http://melpa.org/packages/eacl-badge.svg]] [[http://stable.melpa.org/#/eacl][file:http://stable.melpa.org/packages/eacl-badge.svg]]
 
@@ -88,5 +88,11 @@ Sample of =.dir-locals.el=,
                                 "*.log"))
                      (add-to-list 'grep-find-ignored-files v)))))))
 #+end_src
+
+
+=git grep= is automatically used for grepping in git repository.
+
+Please note =git grep= does NOT use =grep-find-ignored-directories= OR =grep-find-ignored-files=. You could set =eacl-git-grep-untracked= to tell
+git whether untracked files should be grepped in the repository.
 * Bug Report
 Check [[https://github.com/redguardtoo/eacl]].
