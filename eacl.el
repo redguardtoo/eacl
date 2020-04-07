@@ -40,20 +40,19 @@
 ;;
 ;; Modify `grep-find-ignored-directories' and `grep-find-ignored-files'
 ;; to setup directories and files grep should ignore:
-;;   (eval-after-load 'grep
-;;     '(progn
-;;        (dolist (v '("node_modules"
-;;                     "bower_components"
-;;                     ".sass_cache"
-;;                     ".cache"
-;;                     ".npm"))
-;;          (add-to-list 'grep-find-ignored-directories v))
-;;        (dolist (v '("*.min.js"
-;;                     "*.bundle.js"
-;;                     "*.min.css"
-;;                     "*.json"
-;;                     "*.log"))
-;;          (add-to-list 'grep-find-ignored-files v))))
+;;   (with-eval-after-load 'grep
+;;      (dolist (v '("node_modules"
+;;                   "bower_components"
+;;                   ".sass_cache"
+;;                   ".cache"
+;;                   ".npm"))
+;;        (add-to-list 'grep-find-ignored-directories v))
+;;      (dolist (v '("*.min.js"
+;;                   "*.bundle.js"
+;;                   "*.min.css"
+;;                   "*.json"
+;;                   "*.log"))
+;;        (add-to-list 'grep-find-ignored-files v)))
 ;;
 ;; Or you can setup above ignore options in ".dir-locals.el".
 ;; The content of ".dir-locals.el":

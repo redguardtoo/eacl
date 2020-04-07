@@ -54,20 +54,19 @@ You can override the default root directory by setting =eacl-project-root=,
 ** Directories and files grep to ignore
 Modify =grep-find-ignored-directories= and =grep-find-ignored-files= to setup directories and files grep should ignore:
 #+begin_src elisp
-(eval-after-load 'grep
-  '(progn
-     (dolist (v '("node_modules"
-                  "bower_components"
-                  ".sass_cache"
-                  ".cache"
-                  ".npm"))
-       (add-to-list 'grep-find-ignored-directories v))
-     (dolist (v '("*.min.js"
-                  "*.bundle.js"
-                  "*.min.css"
-                  "*.json"
-                  "*.log"))
-       (add-to-list 'grep-find-ignored-files v))))
+(with-eval-after-load 'grep
+  (dolist (v '("node_modules"
+               "bower_components"
+               ".sass_cache"
+               ".cache"
+               ".npm"))
+    (add-to-list 'grep-find-ignored-directories v))
+  (dolist (v '("*.min.js"
+               "*.bundle.js"
+               "*.min.css"
+               "*.json"
+               "*.log"))
+    (add-to-list 'grep-find-ignored-files v)))
 #+end_src
 
 Or you can setup above ignore options in [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html][.dir-locals.el]].
