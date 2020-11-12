@@ -1,12 +1,12 @@
 ;;; eacl.el --- Auto-complete lines by grepping project
 
-;; Copyright (C) 2017, 2018 Chen Bin
+;; Copyright (C) 2017-2020 Chen Bin
 ;;
-;; Version: 2.0.3
+;; Version: 2.0.4
 
 ;; Author: Chen Bin <chenbin DOT sh AT gmail DOT com>
 ;; URL: http://github.com/redguardtoo/eacl
-;; Package-Requires: ((emacs "24.4") (ivy "0.9.1"))
+;; Package-Requires: ((emacs "24.4"))
 ;; Keywords: abbrev, convenience, matching
 
 ;; This file is not part of GNU Emacs.
@@ -81,7 +81,6 @@
 ;;
 
 ;;; Code:
-(require 'ivy nil t)
 (require 'grep)
 (require 'cl-lib)
 
@@ -333,6 +332,7 @@ If MULTILINE-P is t, command is for multiline matching."
          (line (eacl-trim-string (cdr extra)))
          (collection (delq nil (mapcar `(lambda (s) (unless (string= s ,line) s))
                                        (eacl-clean-candidates orig-collection))))
+         selected
          (line-end (line-end-position))
          (time (current-time)))
 
@@ -345,12 +345,8 @@ If MULTILINE-P is t, command is for multiline matching."
       ;; one candidate, just complete it now
       (eacl-replace-text (car collection) line-end))
      (t
-      (ivy-read (format "candidates (%.01f seconds):"
-                        (float-time (time-since time)))
-                collection
-                :action `(lambda (l)
-                           (if (consp l) (setq l (cdr l)))
-                           (eacl-replace-text l ,line-end)))))))
+      (when (setq selected (completing-read (eacl-hint time) collection))
+        (eacl-replace-text selected line-end))))))
 
 (defun eacl-line-beginning-position ()
   "Get line beginning position."
@@ -371,7 +367,7 @@ If MULTILINE-P is t, command is for multiline matching."
         (delete-region (line-beginning-position) b)))
 
       ;; de-select region and move focus to region end
-      (when (and (boundp 'evil-mode) (eq evil-state 'visual))
+      (when (and (boundp 'evil-mode) evil-mode (eq evil-state 'visual))
         (evil-exit-visual-state)
         (evil-insert-state))
       (goto-char (line-end-position)))))
@@ -482,13 +478,16 @@ Whitespace in keyword could match any characters."
                       (not cached-file-content))
                   (insert-file-contents file)
                   (setq cached-file-name file)
-                  (setq cached-file-content (buffer-substring-no-properties (point-min) (point-max))))
+                  (setq cached-file-content (buffer-string)))
                  (t
                   (insert cached-file-content)))
                 (goto-char (point-min))
                 (forward-line (1- linenum))
                 (goto-char (line-beginning-position))
-                (when (setq cand (eacl-extract-matched-multiline line linenum file html-p))
+                (when (setq cand (eacl-extract-matched-multiline line
+                                                                 linenum
+                                                                 file
+                                                                 html-p))
                   (when eacl-debug (message "cand=%s" cand))
                   (add-to-list 'rlt cand)))))))
       (cond
@@ -497,12 +496,10 @@ Whitespace in keyword could match any characters."
        ((= (length rlt) 1)
         (eacl-replace-text (car rlt) line-end))
        (t
-        (ivy-read (format "candidates (%.01f seconds):"
-                          (float-time (time-since time)))
-                  (mapcar 'eacl-multiline-candidate-summary rlt)
-                  :action `(lambda (l)
-                             (if (consp l) (setq l (cdr l)))
-                             (eacl-replace-text l ,line-end))))))))
+        (let* ((cands (mapcar 'eacl-multiline-candidate-summary rlt))
+               (selected (completing-read (eacl-hint time) cands)))
+          (when selected
+            (eacl-replace-text (cdr (assoc selected cands)) line-end))))))))
 
 (provide 'eacl)
 ;;; eacl.el ends here

@@ -23,13 +23,7 @@
 ;;; Commentary:
 
 (require 'ert)
-(require 'eacl)
 (require 'grep)
-
-(defvar cands-for-ivy-read nil "Candidates passed to `ivy-read'.")
-(defun ivy-read (hint cands &rest params)
-  (message "cands=%s len=%d" cands (length cands))
-  (setq cands-for-ivy-read cands))
 
 (ert-deftest eacl-test-complete-one-line ()
   (let* ((grep-find-ignored-files '("eacl-tests.el")))
@@ -38,14 +32,7 @@
       (insert "test single")
       (eacl-complete-line)
       (goto-char (line-beginning-position))
-      (should (string= (eacl-current-line-text) ";; test single line"))
-
-      (erase-buffer)
-      (goto-char (point-min))
-      (insert "shortline")
-      (setq cands-for-ivy-read nil)
-      (eacl-complete-line)
-      (should (eq (length cands-for-ivy-read) 2)))))
+      (should (string= (eacl-current-line-text) ";; test single line")))))
 
 (ert-deftest eacl-test-complete-multiline ()
   (let* ((grep-find-ignored-files '("eacl-tests.el"))
