@@ -32,9 +32,7 @@ Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path
 
 It's also possible to use [[http://melpa.org][melpa]].
 
-[[https://github.com/abo-abo/swiper][Ivy]] is required.
-
-=git grep= will be automatically detected for completion if possible. Or else default grep is used.
+=git grep= is automatically detected for completion if possible. Or else default grep is used.
 * Usage
 =M-x eacl-complete-line= to complete single line. Line candidates are extracted in project root or N level of parent directory. N is the optional parameter of =eacl-complete-line=.
 
