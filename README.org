@@ -36,7 +36,7 @@ It's also possible to use [[http://melpa.org][melpa]].
 
 =git grep= will be automatically detected for completion if possible. Or else default grep is used.
 * Usage
-=M-x eacl-complete-line= to complete single line in project.
+=M-x eacl-complete-line= to complete single line. Line candidates are extracted in project root or N level of parent directory. N is the optional parameter of =eacl-complete-line=.
 
 =M-x eacl-complete-multiline= to complete multiline code or html tag in project
 

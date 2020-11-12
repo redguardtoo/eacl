@@ -60,4 +60,9 @@
       (should (string= (nth 2 lines) "</TestTable>"))
       (should (eq (length lines) 3)))))
 
+(ert-deftest eacl-test-directory ()
+  (let* ((dir1 (eacl-parent-directory 1 default-directory))
+         (dir2 (eacl-parent-directory 2 default-directory)))
+    (should (= (length "eacl/") (- (length dir1) (length dir2))))))
+
 (ert-run-tests-batch-and-exit)

@@ -36,6 +36,9 @@
 ;; List of commands,
 ;;
 ;; `eacl-complete-line' complete single line.
+;; Line candidates are extracted in project root or N level of parent directory.
+;; N is the optional parameter of `eacl-complete-line'.
+;;
 ;; `eacl-complete-multiline' completes multiline code or html tag.
 ;;
 ;; Modify `grep-find-ignored-directories' and `grep-find-ignored-files'
@@ -72,9 +75,10 @@
 ;;
 ;; "git grep" is automatically used for grepping in git repository.
 ;; Please note "git grep" does NOT use `grep-find-ignored-directories' OR
-;; `grep-find-ignored-files'. You could set `eacl-git-grep-untracked' to tell
-;; git whether untracked files should be grepped in the repository.
-
+;; `grep-find-ignored-files'.
+;;
+;; Set `eacl-git-grep-untracked' if untracked files should be git grepped.
+;;
 
 ;;; Code:
 (require 'ivy nil t)
@@ -296,10 +300,34 @@ If MULTILINE-P is t, command is for multiline matching."
                 (eacl-grep-exclude-opts)
                 search-regex)))))))
 
-(defun eacl-complete-line-internal (keyword extra)
-  "Complete line by grepping with KEYWORD.
-EXTRA is optional information to filter candidates."
-  (let* ((default-directory (or (funcall eacl-project-root-callback) default-directory))
+
+(defun eacl-parent-directory (n directory)
+  "Return N - 1 level parent directory of DIRECTORY."
+  (let* ((rlt directory))
+    (while (and (> n 1) (not (string= "" rlt)))
+      (setq rlt (file-name-directory (directory-file-name rlt)))
+      (setq n (1- n)))
+    (if (string= "" rlt) (setq rlt nil))
+    rlt))
+
+(defun eacl-complete-line-directory (&optional n)
+  "Get directory to grep text with N."
+  (cond
+   ((and n (> n 0))
+    (eacl-parent-directory n default-directory))
+
+   (t
+    (or (funcall eacl-project-root-callback)
+        default-directory))))
+
+(defun eacl-hint (time)
+  "Hint for candidates since TIME."
+  (format "candidates (%.01f seconds): "
+          (float-time (time-since time))))
+
+(defun eacl-complete-line-internal (keyword extra &optional n)
+  "Grep with KEYWORD, EXTRA information and N level parent directory."
+  (let* ((default-directory (eacl-complete-line-directory n))
          (cmd (eacl-search-command (eacl-shell-quote-argument keyword) nil))
          (orig-collection (eacl-get-candidates cmd "[\r\n]+" keyword))
          (line (eacl-trim-string (cdr extra)))
@@ -337,7 +365,7 @@ EXTRA is optional information to filter candidates."
       (cond
        ((or (< b (line-beginning-position))
             (< (line-end-position) e))
-        (error "Please select region inside current line."))
+        (error "Please select region inside current line!"))
        (t
         (delete-region e (line-end-position))
         (delete-region (line-beginning-position) b)))
@@ -349,18 +377,23 @@ EXTRA is optional information to filter candidates."
       (goto-char (line-end-position)))))
 
 ;;;###autoload
-(defun eacl-complete-line ()
-  "Complete line by grepping project.
+(defun eacl-complete-line (&optional n)
+  "Complete line by grepping in root or N level parent directory.
 The selected region will replace current line first.
 The text from line beginning to current point is used as grep keyword.
 Whitespace in the keyword could match any characters."
   (eacl-ensure-no-region-selected)
-  (interactive)
+  (interactive "P")
   (let* ((cur-line-info (eacl-current-line-info))
          (cur-line (car cur-line-info))
          (eacl-keyword-start (eacl-line-beginning-position))
          (keyword (eacl-get-keyword cur-line)))
-    (eacl-complete-line-internal keyword cur-line-info)
+
+    ;; Run "C-u eacl-complete-line"
+    (when (and n (not (numberp n)))
+      (setq n 1))
+
+    (eacl-complete-line-internal keyword cur-line-info n)
     (setq eacl-keyword-start nil)))
 
 (defmacro eacl-find-multiline-end (indentation)
@@ -372,16 +405,6 @@ Whitespace in the keyword could match any characters."
   "Is html related mode."
   (or (memq major-mode '(web-mode rjsx-mode xml-mode js2-jsx-mode))
       (derived-mode-p 'sgml-mode)))
-
-(defmacro eacl-match-html-start-tag-p (line html-p)
-  "LINE is like '>'."
-  `(and ,html-p
-        ;; eng html tag can't be ">"
-        (string-match "^[ \t]*>[ \t]*$" ,line)))
-
-(defmacro eacl-match-start-bracket-p (line)
-  "LINE is '{'."
-  `(string-match "^[ \t]*[\\[{(][ \t]*$" ,line))
 
 (defun eacl-extract-matched-multiline (line linenum file &optional html-p)
   "Extract matched lines start from LINE at LINENUM in FILE.
@@ -411,8 +434,10 @@ Return (cons multiline-text end-line-text) or nil."
              (t
               (goto-char end)
               (setq line (eacl-current-line-text))
-              (when (and (not (eacl-match-start-bracket-p line))
-                         (not (eacl-match-html-start-tag-p line html-p)))
+              (when (and (not (string-match "^[ \t]*[\\[{(][ \t]*$" line))
+                         (not (and html-p
+                                   ;; eng html tag can't be ">"
+                                   (string-match "^[ \t]*>[ \t]*$" line))))
                 ;; candidate found!
                 (setq rlt (buffer-substring-no-properties beg end))
                 (setq continue nil))))))))
