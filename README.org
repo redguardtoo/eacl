@@ -1,6 +1,8 @@
 * eacl - Emacs auto complete lines
 
-[[https://travis-ci.org/redguardtoo/eacl][https://travis-ci.org/redguardtoo/eacl.svg?branch=master]] [[http://melpa.org/#/eacl][file:http://melpa.org/packages/eacl-badge.svg]] [[http://stable.melpa.org/#/eacl][file:http://stable.melpa.org/packages/eacl-badge.svg]]
+[[https://github.com/redguardtoo/eacl/actions/workflows/test.yml][https://github.com/redguardtoo/eacl/actions/workflows/test.yml/badge.svg]]
+[[http://melpa.org/#/eacl][file:http://melpa.org/packages/eacl-badge.svg]]
+[[http://stable.melpa.org/#/eacl][file:http://stable.melpa.org/packages/eacl-badge.svg]]
 
 Auto complete lines by grepping the project.
 
