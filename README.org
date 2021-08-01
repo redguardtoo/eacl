@@ -35,10 +35,14 @@ Place =eacl.el= under your [[https://www.emacswiki.org/emacs/LoadPath][Load Path
 It's also possible to use [[http://melpa.org][melpa]].
 
 =git grep= is automatically detected for completion if possible. Or else default grep is used.
-* Usage
-=M-x eacl-complete-line= to complete single line. Line candidates are extracted in project root or N level of parent directory. N is the optional parameter of =eacl-complete-line=.
 
-=M-x eacl-complete-multiline= to complete multiline code or html tag in project
+To use =git grep=, Git should be added into environment variable "PATH".
+* Usage
+=M-x eacl-complete-line= completes single line. Line candidates are extracted in project root.
+
+=C-u M-x eacl-complete-line= completes single line from *deleted code* if current project is tracked by Git.
+
+=M-x eacl-complete-multiline= completes multiline code or html tag in project
 
 The keyword to grep is the text from line beginning to current cursor.
 

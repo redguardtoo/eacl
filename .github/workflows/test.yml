@@ -19,6 +19,8 @@ jobs:
         version: ${{ matrix.emacs_version }}
 
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Print emacs version
       run: emacs --version

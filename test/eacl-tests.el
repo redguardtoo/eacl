@@ -22,6 +22,8 @@
 
 ;;; Commentary:
 
+;;; Code:
+
 (require 'ert)
 (require 'grep)
 
@@ -33,6 +35,16 @@
       (eacl-complete-line)
       (goto-char (line-beginning-position))
       (should (string= (eacl-current-line-text) ";; test single line")))))
+
+(ert-deftest eacl-test-complete-one-line-from-deleted-code ()
+  (let* ((grep-find-ignored-files '("eacl-tests.el"))
+         (eacl-use-git-grep-p t))
+    (with-temp-buffer
+      ;; complete one line
+      (insert "hello ")
+      (eacl-complete-line t)
+      (goto-char (line-beginning-position))
+      (should (string= (eacl-current-line-text) "(message \"hello world\")")))))
 
 (ert-deftest eacl-test-complete-multiline ()
   (let* ((grep-find-ignored-files '("eacl-tests.el"))
@@ -46,10 +58,5 @@
       (should (string-match "<h1>hello world</h1>" (nth 1 lines)))
       (should (string= (nth 2 lines) "</TestTable>"))
       (should (eq (length lines) 3)))))
-
-(ert-deftest eacl-test-directory ()
-  (let* ((dir1 (eacl-parent-directory 1 default-directory))
-         (dir2 (eacl-parent-directory 2 default-directory)))
-    (should (= (length "eacl/") (- (length dir1) (length dir2))))))
 
 (ert-run-tests-batch-and-exit)
