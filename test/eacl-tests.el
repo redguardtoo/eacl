@@ -36,16 +36,6 @@
       (goto-char (line-beginning-position))
       (should (string= (eacl-current-line-text) ";; test single line")))))
 
-(ert-deftest eacl-test-complete-one-line-from-deleted-code ()
-  (let* ((grep-find-ignored-files '("eacl-tests.el"))
-         (eacl-use-git-grep-p t))
-    (with-temp-buffer
-      ;; complete one line
-      (insert "hello ")
-      (eacl-complete-line t)
-      (goto-char (line-beginning-position))
-      (should (string= (eacl-current-line-text) "(message \"hello world\")")))))
-
 (ert-deftest eacl-test-complete-multiline ()
   (let* ((grep-find-ignored-files '("eacl-tests.el"))
          lines)
