@@ -56,6 +56,11 @@ You can override the default root directory by setting =eacl-project-root=,
 #+begin_src elisp
 (setq eacl-project-root "~/projs/PROJECT_DIR")
 #+end_src
+
+=M-x eacl-complete-line-from-buffer= to complete single line from the buffers. Set =eacl-ignore-buffers= and =eacl-include-buffers= to specify ignored&included buffers.
+
+=M-x eacl-complete-line-from-buffer-or-project= completes one line by grepping the project root when editing a physical file. Or else, it completes one line by search all buffers.
+
 * Tips
 ** Directories and files to ignore
 Modify =grep-find-ignored-directories= and =grep-find-ignored-files= to setup directories and files grep should ignore:
