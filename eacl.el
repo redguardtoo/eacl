@@ -6,7 +6,7 @@
 
 ;; Author: Chen Bin <chenbin DOT sh AT gmail DOT com>
 ;; URL: http://github.com/redguardtoo/eacl
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: abbrev, convenience, matching
 
 ;; This file is not part of GNU Emacs.
@@ -90,6 +90,7 @@
 ;;; Code:
 (require 'grep)
 (require 'cl-lib)
+(require 'subr-x)
 
 (defgroup eacl nil
   "Emacs auto-complete line(s) by grepping project."
@@ -177,10 +178,6 @@ The callback is expected to return the path of project root."
   "Current line text."
   (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
-(defun eacl-trim-left (s)
-  "Remove whitespace at the beginning of S."
-  (if (string-match "\\`[ \t\n\r]+" s) (replace-match "" t t s) s))
-
 (defun eacl-encode(str)
   "Encode STR."
   (setq str (regexp-quote str))
@@ -220,10 +217,6 @@ The callback is expected to return the path of project root."
           (mapconcat (lambda (e) (format "--exclude='%s'" e))
                      grep-find-ignored-files " ")))
 
-(defun eacl-trim-string (string)
-  "Trim STRING."
-  (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string)))
-
 ;;;###autoload
 (defun eacl-get-keyword (line)
   "Get trimmed keyword from LINE."
@@ -238,7 +231,7 @@ Original text from END is preserved."
 
 (defun eacl-clean-summary (s)
   "Clean candidate summary S."
-  (eacl-trim-left (replace-regexp-in-string "[ \t]*[\n\r]+[ \t]*" "\\\\n" s)))
+  (string-trim-left (replace-regexp-in-string "[ \t]*[\n\r]+[ \t]*" "\\\\n" s)))
 
 (defun eacl-multiline-candidate-summary (s)
   "If S is too wide to fit into the screen, return pair summary and S."
@@ -361,7 +354,7 @@ If DELETED-P is t and git grep is used, grep only from deleted code."
   (let* ((default-directory (eacl-root-directory))
          (cmd (eacl-search-command (eacl-shell-quote-argument keyword) nil deleted-p))
          (orig-collection (eacl-get-candidates cmd "[\r\n]+" keyword deleted-p))
-         (line (eacl-trim-string (cdr extra)))
+         (line (string-trim (cdr extra)))
          (collection (delq nil (mapcar `(lambda (s) (unless (string= s ,line) s))
                                        (eacl-clean-candidates orig-collection))))
          selected
