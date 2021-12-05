@@ -29,7 +29,9 @@
 
 ;; Multiple commands are provided to grep files in the project to get
 ;; auto complete candidates.
-;; The keyword to grep is text from line beginning to current cursor.
+;;
+;; The keyword to grep is text from the line beginning to current cursor.
+;;
 ;; Project is *automatically* detected if Git/Mercurial/Subversion is used.
 ;; You can override the project root by setting `eacl-project-root',
 ;;
@@ -77,7 +79,10 @@
 ;; "git grep" is automatically used for grepping in git repository.
 ;; Please note "git grep" does NOT use `grep-find-ignored-directories' OR
 ;; `grep-find-ignored-files'.
-;; To use "git grep", Git should be added into environment variable "PATH".
+;;
+;; The command line program of grep and git need be added into environment variable
+;; "PATH".  Or else you need set `eacl-grep-program' and `eacl-git-program' to
+;; specify their path.
 ;;
 ;; Set `eacl-git-grep-untracked' if untracked files should be git grepped too.
 ;;
@@ -91,17 +96,22 @@
   :group 'tools)
 
 (defcustom eacl-grep-program "grep"
-  "GNU Grep program."
+  "The path of GNU Grep command line program."
+  :type 'string
+  :group 'eacl)
+
+(defcustom eacl-git-program "git"
+  "The path of Git command line program."
   :type 'string
   :group 'eacl)
 
 (defcustom eacl-git-grep-untracked t
-  "Grep untracked files in Git repository."
+  "Search text in untracked files in Git repository."
   :type 'boolean
   :group 'eacl)
 
 (defcustom eacl-project-root nil
-  "Project root.  If it's nil project root is detected automatically."
+  "The project root.  If it's nil project root is detected automatically."
   :type 'string
   :group 'eacl)
 
@@ -286,7 +296,7 @@ If DELETED-P is t and git grep is used, grep only from deleted code."
   (let ((path (buffer-file-name)))
     (or eacl-use-git-grep-p
         (and path
-             (zerop (call-process "git" nil nil nil "ls-files" "--error-unmatch" path))))))
+             (zerop (call-process eacl-git-program nil nil nil "ls-files" "--error-unmatch" path))))))
 
 (defun eacl-search-command (search-regex multiline-p &optional deleted-p)
   "Return a shell command searching for SEARCH-REGEX.
@@ -303,7 +313,10 @@ If DELETED-P is t and git grep is used, grep only from deleted code."
       (cond
        ;; use git grep
        (git-p
-        (format "git --no-pager grep -n %s \"%s\"" git-grep-opts search-regex))
+        (format "%s --no-pager grep -n %s \"%s\""
+                eacl-git-program
+                git-grep-opts
+                search-regex))
 
        ;; use grep
        (t
@@ -317,8 +330,14 @@ If DELETED-P is t and git grep is used, grep only from deleted code."
       (cond
        ;; use git grep
        (git-p
-        (if deleted-p (format "git --no-pager log -p --all -G \"%s\" | %s \"^-.*%s\"" search-regex eacl-grep-program search-regex)
-            (format "git --no-pager grep -h %s \"%s\"" git-grep-opts search-regex)))
+        (if deleted-p (format "%s --no-pager log -p --all -G \"%s\" | %s \"^-.*%s\""
+                              eacl-git-program
+                              search-regex
+                              eacl-grep-program search-regex)
+          (format "%s --no-pager grep -h %s \"%s\""
+                  eacl-git-program
+                  git-grep-opts
+                  search-regex)))
 
        ;; use grep
        (t

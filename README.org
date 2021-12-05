@@ -37,6 +37,8 @@ It's also possible to use [[http://melpa.org][melpa]].
 =git grep= is automatically detected for completion if possible. Or else default grep is used.
 
 To use =git grep=, Git should be added into environment variable "PATH".
+
+The command line program of grep and git need be added into environment variable "PATH". Or else you need set =eacl-grep-program= and =eacl-git-program= to specify their path.
 * Usage
 =M-x eacl-complete-line= completes single line. Line candidates are extracted from the project root.
 
