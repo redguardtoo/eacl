@@ -138,6 +138,8 @@ The callback is expected to return the path of project root."
 (defvar eacl-debug nil
   "Enable debug mode.  Internal variable.")
 
+(defvar projectile-project-root) ;; avoid compiling error
+
 (defalias 'eacl-complete-statement 'eacl-complete-multiline)
 (defalias 'eacl-complete-snippet 'eacl-complete-multiline)
 (defalias 'eacl-complete-tag 'eacl-complete-multiline)
@@ -156,7 +158,7 @@ The callback is expected to return the path of project root."
   "Get project root."
   (or eacl-project-root
       ;; use projectile to find project root
-      (and (fboundp 'projectile-find-file)
+      (and (fboundp 'projectile-project-root)
            (unless (featurep 'projectile) (require 'projectile))
            (funcall 'projectile-project-root))
       ;; use find-file-in-project to find project root
@@ -266,7 +268,7 @@ Use SEP to split output into lines.
 Candidates same as KEYWORD in current file is excluded.
 If DELETED-P is t and git grep is used, grep only from deleted code."
   (when eacl-debug
-    (message "eacl-get-candidates called. cmd=%s deleted-p" cmd deleted-p))
+    (message "eacl-get-candidates called. cmd=%s deleted-p=%s" cmd deleted-p))
 
   (let* ((cands (split-string (shell-command-to-string cmd) sep t "[ \t\r\n]+"))
          (str (format "%s:1:%s" (eacl-relative-path) keyword))
@@ -405,8 +407,8 @@ The selected region will replace current line first.
 The text from line beginning to current point is used as grep keyword.
 Whitespace in the keyword could match any characters.
 If DELETED-P is t and current file is tracked by Git, complete from deleted code."
-  (eacl-ensure-no-region-selected)
   (interactive "P")
+  (eacl-ensure-no-region-selected)
   (let* ((cur-line-info (eacl-current-line-info))
          (cur-line (car cur-line-info))
          (eacl-keyword-start (eacl-line-beginning-position))
