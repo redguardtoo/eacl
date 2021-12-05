@@ -12,7 +12,7 @@ Auto complete lines by grepping the project.
 
 For example, a web developer need create a new component instance.
 
-Suppose the component has been used in current project before:
+Suppose the component is used in current project before:
 #+begin_src html
 <MyComponent
   attr1="v1"
@@ -38,24 +38,24 @@ It's also possible to use [[http://melpa.org][melpa]].
 
 To use =git grep=, Git should be added into environment variable "PATH".
 * Usage
-=M-x eacl-complete-line= completes single line. Line candidates are extracted in project root.
-
-=C-u M-x eacl-complete-line= completes single line from *deleted code* if current project is tracked by Git.
+=M-x eacl-complete-line= completes single line. Line candidates are extracted from the project root.
 
 =M-x eacl-complete-multiline= completes multiline code or html tag in project
 
-The keyword to grep is the text from line beginning to current cursor.
+=C-u M-x eacl-complete-line= completes single line from *deleted code* if current project is tracked by Git.
 
-Whitespace in keyword could match any characters.
+The keyword to grep is the text from the line beginning to current cursor.
 
-Project is *automatically* detected if Git/Mercurial/Subversion is used.
+Whitespace in keyword matches any characters.
+
+The project root is *automatically* detected if Git/Mercurial/Subversion is used.
 
 You can override the default root directory by setting =eacl-project-root=,
 #+begin_src elisp
 (setq eacl-project-root "~/projs/PROJECT_DIR")
 #+end_src
 * Tips
-** Directories and files grep to ignore
+** Directories and files to ignore
 Modify =grep-find-ignored-directories= and =grep-find-ignored-files= to setup directories and files grep should ignore:
 #+begin_src elisp
 (with-eval-after-load 'grep
