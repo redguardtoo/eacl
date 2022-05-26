@@ -1,15 +1,18 @@
 SHELL = /bin/sh
 EMACS ?= emacs
 PROFILER =
+EMACS_BATCH_OPTS=--batch -Q -l eacl.el
+RM = @rm -rf
 
-.PHONY: test
+.PHONY: test clean compile
 
-# Delete byte-compiled files etc.
 clean:
-	rm -f *~
-	rm -f \#*\#
-	rm -f *.elc
+	$(RM) *~
+	$(RM) \#*\#
+	$(RM) *.elc
 
-# Run tests.
-test: clean
-	$(EMACS) -batch -Q -l eacl.el -l test/eacl-tests.el
+compile: clean
+	@$(EMACS) $(EMACS_BATCH_OPTS) -l tests/my-byte-compile.el 2>&1 | grep -E "([Ee]rror|[Ww]arning):" && exit 1 || exit 0
+
+test: compile
+	@$(EMACS) $(EMACS_BATCH_OPTS) -l tests/eacl-tests.el

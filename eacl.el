@@ -179,6 +179,8 @@ Please note `eacl-ignore-buffers' has lower priority than this variable."
 
 ;; {{ make linter happy
 (defvar evil-state)
+(declare-function evil-insert-state "evil")
+(declare-function evil-exit-visual-state "evil")
 ;; }}
 
 (defun eacl-relative-path ()
@@ -446,10 +448,10 @@ If DELETED-P is t and git grep is used, grep only from deleted code."
 ;;;###autoload
 (defun eacl-complete-line (&optional deleted-p)
   "Complete line by grepping in root.
-The selected region will replace current line first.
+The selected region replaces current line first.
 The text from line beginning to current point is used as grep keyword.
-Whitespace in the keyword could match any characters.
-If DELETED-P is t and current file is tracked by Git, complete from deleted code."
+Whitespace in the keyword matches any characters.
+If DELETED-P is t and Git is used, complete from deleted code."
   (interactive "P")
   (eacl-ensure-no-region-selected)
   (let* ((cur-line-info (eacl-current-line-info))
